@@ -1,5 +1,9 @@
 Revision history for Perl extension Tokenizer.
 
+0.2.3 Fri Apr 16 08:39:52 CEST 2004
+	- fixed incorect regexp in comment matching (thanks pwinkler for 
+		reporting bug)
+
 0.2.2 Fri Mar 26 15:46:00 CET 2004
 	- trying fix compilation problems reported on Sun4 from CPAN
 	   (hopefully they got fixed, i've no Sun to test it :(

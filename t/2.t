@@ -1,4 +1,5 @@
 #copy-mode test
+#
 
 use Test::More tests => 10;
 BEGIN { use_ok('Text::Tokenizer') };

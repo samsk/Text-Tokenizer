@@ -116,11 +116,11 @@ static int 	 token_opts	= TOK_OPT_DEFAULT;	/*tokenizer options*/
 
 %}
 
-/*identificators*/
+/*identificators (flex always matches biggest chunk it can)*/
 BLANK		[[:blank:]]
 TEXT		([^\t\n\"\'\`[:blank:]]|\\(\"|\'|\`)|\0)
 EOL		([\r\n]|\r\n)
-COMMENT		(#[^\n]+)	
+COMMENT		(#[^\n]*)
 
 /*options*/
 %option prefix="tokenizer_yy"

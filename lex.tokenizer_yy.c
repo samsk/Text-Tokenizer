@@ -884,7 +884,7 @@ static yyconst struct yy_trans_info yy_transition[8843] =
  { 247,3354 }, { 248,3354 }, { 249,3354 }, { 250,3354 }, { 251,3354 },
 
  { 252,3354 }, { 253,3354 }, { 254,3354 }, { 255,3354 }, { 256,3870 },
- {   0,  21 }, {   0,5982 }, {   1,3892 }, {   2,3892 }, {   3,3892 },
+ {   0,  19 }, {   0,5982 }, {   1,3892 }, {   2,3892 }, {   3,3892 },
  {   4,3892 }, {   5,3892 }, {   6,3892 }, {   7,3892 }, {   8,3892 },
  {   9,4150 }, {   0,   0 }, {  11,3892 }, {  12,3892 }, {  13,3892 },
  {  14,3892 }, {  15,3892 }, {  16,3892 }, {  17,3892 }, {  18,3892 },
@@ -2341,7 +2341,7 @@ static tok_line  error_line	= 0;			/*error line number*/
 static tok_error error_type	= NOERR;		/*only used on TOK_ERROR*/
 static int 	 token_opts	= TOK_OPT_DEFAULT;	/*tokenizer options*/
 
-/*identificators*/
+/*identificators (flex always matches biggest chunk it can)*/
 /*options*/
 /*conditions (exclusive)*/
 #define d_quote 1
