@@ -57,7 +57,7 @@ our @EXPORT = qw(
 	tokenizer_destroy
 );
 
-our $VERSION = '0.2.4';
+our $VERSION = '0.2.5';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
