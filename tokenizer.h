@@ -4,15 +4,49 @@
 #ifndef __TOKENIZER_H
 #define __TOKENIZER_H
 
+__BEGIN_DECLS
+
+/*fixups for constants export*/
+#define	TOK_UNDEF_v	0
+#define	TOK_TEXT_v	1
+#define	TOK_DQUOTE_v	2
+#define	TOK_SQUOTE_v	3
+#define	TOK_IQUOTE_v	4
+#define	TOK_SIQUOTE_v	5
+#define	TOK_BLANK_v	6
+#define	TOK_ERROR_v	7
+#define	TOK_EOL_v	8
+#define	TOK_COMMENT_v	9
+#define	TOK_EOF_v	EOF
+
+#define	NOERR_v			0
+#define	UNCLOSED_DQUOTE_v	1
+#define	UNCLOSED_SQUOTE_v	2
+#define	UNCLOSED_IQUOTE_v	3
+#define	NOCONTEXT_v		4
+
 /*token types*/
 typedef enum {
-   TOK_UNDEF, TOK_TEXT, TOK_DQUOTE, TOK_SQUOTE, TOK_IQUOTE, TOK_SIQUOTE, TOK_BLANK, 
-   TOK_ERROR, TOK_EOL, TOK_COMMENT, TOK_EOF = EOF
+   TOK_UNDEF	= TOK_UNDEF_v,
+   TOK_TEXT	= TOK_TEXT_v,
+   TOK_DQUOTE	= TOK_DQUOTE_v,
+   TOK_SQUOTE	= TOK_SQUOTE_v,
+   TOK_IQUOTE	= TOK_IQUOTE_v,
+   TOK_SIQUOTE	= TOK_SIQUOTE_v,
+   TOK_BLANK	= TOK_BLANK_v,
+   TOK_COMMENT	= TOK_COMMENT_v,
+   TOK_ERROR	= TOK_ERROR_v,
+   TOK_EOL	= TOK_EOL_v,
+   TOK_EOF	= TOK_EOF_v
 } tok_type;
 
 /*error types*/
 typedef enum {
-  NOERR, UNCLOSED_DQUOTE, UNCLOSED_SQUOTE, UNCLOSED_IQUOTE, NOCONTEXT
+  NOERR			= NOERR_v,
+  UNCLOSED_DQUOTE	= UNCLOSED_DQUOTE_v,
+  UNCLOSED_SQUOTE	= UNCLOSED_SQUOTE_v,
+  UNCLOSED_IQUOTE	= UNCLOSED_IQUOTE_v,
+  NOCONTEXT		= NOCONTEXT_v
 } tok_error;
 
 /*tokenizer options*/
@@ -83,5 +117,7 @@ tok_bool tokenizer_delete(tok_id);
 tok_bool tokenizer_flush(tok_id);
 /*destroy whole tokenizer*/
 tok_bool tokenizer_destroy();
+
+__END_DECLS
 
 #endif

@@ -12,7 +12,7 @@ all: lex.tokenizer_yy.$(EXT)
 lex.tokenizer_yy.$(EXT): clean tokenizer.$(FLEX_EXT)
 	$(FLEX) tokenizer.$(FLEX_EXT)
 
-.PHONY: all clean
+.PHONY: all clean lex.tokenizer_yy.$(EXT)
 
 clean:
 	rm -f lex.tokenizer_yy.o

@@ -1,5 +1,9 @@
 Revision history for Perl extension Tokenizer.
 
+0.2.1 Wed 24 Mar 2004 02:13:11 PM CET
+	- fixed some compiler portability problematic code
+	- upgraded flex generated code
+
 0.2   Fri Feb  6 16:35:21 EST 2004
 	- renamed to Text::Tokenizer and published
 

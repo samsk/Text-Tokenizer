@@ -2,29 +2,29 @@
 #include "perl.h"
 #include "XSUB.h"
 
-#include "ppport.h"
-
+/*code header file*/
 #include <tokenizer.h>
 
-/*fixups*/
-#define	TOK_UNDEF	0
-#define	TOK_TEXT	1
-#define	TOK_DQUOTE	2
-#define	TOK_SQUOTE	3
-#define	TOK_IQUOTE	4
-#define	TOK_SIQUOTE	5
-#define	TOK_BLANK	6
-#define	TOK_ERROR	7
-#define	TOK_EOL		8
-#define	TOK_COMMENT	9
-#define	TOK_EOF		EOF
+/*enum->constants hack*/
+#define TOK_UNDEF	TOK_UNDEF_v
+#define TOK_TEXT	TOK_TEXT_v
+#define TOK_DQUOTE	TOK_DQUOTE_v
+#define TOK_SQUOTE	TOK_SQUOTE_v
+#define TOK_IQUOTE	TOK_IQUOTE_v
+#define TOK_SIQUOTE	TOK_SIQUOTE_v
+#define TOK_BLANK	TOK_BLANK_v
+#define TOK_COMMENT	TOK_COMMENT_v
+#define TOK_ERROR	TOK_ERROR_v
+#define TOK_EOL		TOK_EOL_v
+#define TOK_EOF		TOK_EOF_v
+#define NOERR		NOERR_v
+#define UNCLOSED_DQUOTE	UNCLOSED_DQUOTE_v
+#define UNCLOSED_SQUOTE	UNCLOSED_SQUOTE_v
+#define UNCLOSED_IQUOTE	UNCLOSED_IQUOTE_v
+#define NOCONTEXT	NOCONTEXT_v
 
-#define	NOERR		0
-#define	UNCLOSED_DQUOTE	1
-#define	UNCLOSED_SQUOTE	2
-#define	UNCLOSED_IQUOTE	3
-#define	NOCONTEXT	4
-
+/*package header files*/
+#include "ppport.h"
 #include "const-c.inc"
 
 /*internal functions*/
