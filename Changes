@@ -1,6 +1,13 @@
 Revision history for Perl extension Tokenizer.
 
-0.2.3 Fri Apr 16 08:39:52 CEST 2004
+0.2.4 Thu Jan 6 02:05:09 CET 2005
+	- fixed SEGFAULT when perl build without PERL_IMPLICIT_CONTEXT (my mdk
+			package is shipped this way)
+		-- perl omites pTHX params, but my functions requires them,
+			so we get 2 params on the stack but unfortunately
+			functions use only one
+
+0.2.3 Fri Apr 16 08:39:52 CET 2004
 	- fixed incorect regexp in comment matching (thanks pwinkler for 
 		reporting bug)
 

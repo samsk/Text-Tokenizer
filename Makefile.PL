@@ -6,7 +6,7 @@ WriteMakefile(
     VERSION_FROM      => 'Tokenizer.pm', # finds $VERSION
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'Tokenizer.pm', # retrieve abstract from module
-       AUTHOR         => 'Sam <sam@frida.fri.utc.sk>') : ()),
+       AUTHOR         => 'Sam <sam(at)frida.fri.utc.sk>') : ()),
     LIBS              => [''], # e.g., '-lm'
     DEFINE            => '-DHAVE_CONFIG_H -DHAVE_CALLBACK_BUFFER', 
     INC               => '-I.', 

@@ -53,12 +53,12 @@ typedef enum {
 
 /*tokenizer options*/
 #define TOK_OPT_NONE		0
-#define TOK_OPT_UNESCAPE_CHARS	(1<<1)
-#define TOK_OPT_UNESCAPE_LINES	(1<<2)
+#define TOK_OPT_UNESCAPE_CHARS	(1UL<<1)
+#define TOK_OPT_UNESCAPE_LINES	(1UL<<2)
 #define TOK_OPT_UNESCAPE	(TOK_OPT_UNESCAPE_CHARS | TOK_OPT_UNESCAPE_LINES)
-#define TOK_OPT_NOUNESCAPE	(1<<3)
-#define TOK_OPT_SIQUOTE		(1<<4)
-#define TOK_OPT_PASSCOMMENT	(1<<5)
+#define TOK_OPT_NOUNESCAPE	(1UL<<3)
+#define TOK_OPT_SIQUOTE		(1UL<<4)
+#define TOK_OPT_PASSCOMMENT	(1UL<<5)
 
 /*default options*/
 #define TOK_OPT_DEFAULT		(TOK_OPT_NOUNESCAPE)
@@ -100,25 +100,26 @@ void tokenizer_setcb(struct tok_buffer *);
 #else
 #define tokenizer_setcb(junk)
 #endif
-/*tokenizer initialization*/
+
+/* tokenizer initialization*/
 static tok_id	tokenizer_init(FILE *);
-/*create new scan buffer from passed file*/
+/* create new scan buffer from passed file*/
 tok_id	tokenizer_new(FILE *);
-/*crate new scan buffer from passed array of bytes*/
+/* crate new scan buffer from passed array of bytes*/
 tok_id	tokenzier_new_strbuf(char *, unsigned int);
-/*perform scan and return values*/
+/* perform scan and return values*/
 TOKEN_STRUCT *tokenizer_scan(TOKEN_STRUCT *);
-/*perform scan and return values with buffer auto switch*/
+/* perform scan and return values with buffer auto switch*/
 TOKEN_STRUCT *tokenizer_scanb(tok_id, TOKEN_STRUCT *);
-/*find wheter scan buffer exists*/
+/* find wheter scan buffer exists*/
 tok_bool tokenizer_exists(tok_id);
-/*switch scan buffer*/
+/* switch scan buffer*/
 tok_bool tokenizer_switch(tok_id);
-/*delete scan buffer*/
+/* delete scan buffer*/
 tok_bool tokenizer_delete(tok_id);
-/*flush scan buffer*/
+/* flush scan buffer*/
 tok_bool tokenizer_flush(tok_id);
-/*destroy whole tokenizer*/
+/* destroy whole tokenizer*/
 tok_bool tokenizer_destroy();
 
 

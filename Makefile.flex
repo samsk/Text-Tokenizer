@@ -1,5 +1,5 @@
 ####
-# Makefile by Sam <sam@frida.fri.utc.sk>
+# Makefile by Sam <sam(at)frida.fri.utc.sk>
 #	for generation of flex based tokenizer
 #
 EXT	= c

@@ -4,7 +4,7 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the same terms as Perl itself.
  * 
- *  Copyright 2003-2004 Sam <sam@frida.fri.utc.sk>
+ *  Copyright 2003-2004 Sam <sam(at)frida.fri.utc.sk>
  *
 */
 
@@ -20,6 +20,17 @@ extern "C" {
 
 #ifdef __cplusplus
 }
+#endif
+
+/* debug */
+#ifdef __NOT_DEF
+#define ON_DEBUG(code)	code
+#define ON_DEBUG_PRINT(fmt)		fprintf(stderr, "[%s:%d] " fmt "\n", __FUNCTION__, __LINE__);fflush(stderr);
+#define ON_DEBUG_PRINT1(fmt, arg)	fprintf(stderr, "[%s:%d] " fmt "\n", __FUNCTION__, __LINE__, arg);fflush(stderr);
+#else
+#define ON_DEBUG(code)
+#define ON_DEBUG_PRINT(fmt)
+#define ON_DEBUG_PRINT1(fmt, arg)
 #endif
 
 /*code header file*/
@@ -47,39 +58,52 @@ extern "C" {
 #include "ppport.h"
 #include "const-c.inc"
 
+/* fixup for perl build without PERL_IMPLICIT_CONTEXT */
+#ifndef PERL_IMPLICIT_CONTEXT
+#define my_pTHX		void *__non_arg
+#define my_pTHX_	void *__non_arg,
+#define my_aTHX		NULL
+#else
+#define my_pTHX		pTHX
+#define my_pTHX_	pTHX_
+#define	my_aTHX		aTHX
+#endif
+
+
 /*internal functions*/
-static tok_buf *_Tokenizer_tokb_new(pTHX)
+STATIC tok_buf *S_Tokenizer_tokb_new(my_pTHX)
 {
-	return (tok_buf *) newSV(0);
+	tok_buf *ret = (tok_buf *) newSV(0);
+	return ret;
 }
 
-static void _Tokenizer_tokb_clear(pTHX_ tok_buf *buf)
+STATIC void S_Tokenizer_tokb_clear(my_pTHX_ tok_buf *buf)
 {
-	sv_setpv((SV *)buf, "");
+	sv_setpvn((SV *)buf, "", 0);
 	return;
 }
 
-static void _Tokenizer_tokb_put(pTHX_ tok_buf *buf, char *str, unsigned int len)
+STATIC void S_Tokenizer_tokb_put(my_pTHX_ tok_buf *buf, char *str, unsigned int len)
 {
 	sv_catpvn((SV *) buf, str, len);
 	return;
 }
 
-static void _Tokenizer_tokb_del(pTHX_ tok_buf *buf)
+STATIC void S_Tokenizer_tokb_del(my_pTHX_ tok_buf *buf)
 {
 	sv_2mortal((SV *) buf);
 	return;
 }
 
-static void _Tokenizer_tokb_init(pTHX)
+STATIC void S_Tokenizer_tokb_init(my_pTHX)
 {
 	struct tok_buffer *tb	= (struct tok_buffer *) safemalloc(sizeof(struct tok_buffer));
 
-	tb->ts_new	= (void *)_Tokenizer_tokb_new;
-	tb->ts_clear	= (void *)_Tokenizer_tokb_clear;
-	tb->ts_put	= (void *)_Tokenizer_tokb_put;
-	tb->ts_del	= (void *)_Tokenizer_tokb_del;
-#ifdef aTHX
+	tb->ts_new	= (void *)S_Tokenizer_tokb_new;
+	tb->ts_clear	= (void *)S_Tokenizer_tokb_clear;
+	tb->ts_put	= (void *)S_Tokenizer_tokb_put;
+	tb->ts_del	= (void *)S_Tokenizer_tokb_del;
+#ifdef PERL_IMPLICIT_CONTEXT
 	tb->ts_context	= aTHX;
 #else
 	tb->ts_context	= NULL;
@@ -96,7 +120,7 @@ INCLUDE: const-xs.inc
 PROTOTYPES: DISABLE
 
 BOOT:
-	_Tokenizer_tokb_init(aTHX);
+	S_Tokenizer_tokb_init(my_aTHX);
 
 
 int
@@ -104,7 +128,7 @@ tokenizer_options(opts)
 	int	opts
 	CODE:
 		{
-			RETVAL	= tokenizer_options(opts);
+			RETVAL	= (int) tokenizer_options(opts);
 		}
 	OUTPUT:
 		RETVAL
@@ -138,21 +162,19 @@ tokenizer_scan()
 		tok_retval	token;
 	PPCODE:
 		{
-
-
 			/*scan buffer*/
 			tokenizer_scan(&token);
 
-			/*return array*/
+			/*returning array*/
 			/*XXX: token.buffer should point to an growing SV
 			 *	so I hope newSVsv copies only existing length
 			 *	of SV and not whole SV	*/
 			XPUSHs(sv_2mortal(newSVsv((SV *)token.buffer)));/*string*/
 			XPUSHs(sv_2mortal(newSViv(token.token)));	/*type*/
 			XPUSHs(sv_2mortal(newSViv(token.line)));	/*line*/
-			if(token.error != NOERR)		
+			if(token.error != NOERR)
 			{
-				XPUSHs(sv_2mortal(newSViv(token.error)));		/*error*/
+				XPUSHs(sv_2mortal(newSViv(token.error)));	/*error*/
 				XPUSHs(sv_2mortal(newSViv(token.error_line)));	/*error line*/
 			}
 		}
@@ -205,3 +227,4 @@ tokenizer_destroy()
 		}
 	OUTPUT:
 		RETVAL
+

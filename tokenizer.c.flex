@@ -15,7 +15,7 @@
  *	- bad call (segfault) prevention				   *
  *									   *
  *   Copyright (C) 2001-2004 by Samuel Behan 				   *
- *   sam@frida.fri.utc.sk			                           *
+ *   sam<at>frida.fri.utc.sk			                           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -46,13 +46,13 @@
 #include <tokenizer.h>
 
 /*
-* definitions -- max abstraction level
-*/
+ * definitions -- max abstraction level
+ */
 
 /*buffer handlings*/
 #ifdef HAVE_CALLBACK_BUFFER
 
-//#warning BUFFER: using callback
+/* #warning BUFFER: using callback */
 /*buffer*/
 static struct tok_buffer *tok_text	= NULL;
 #define TOKEN_TEXT		tok_text
@@ -68,7 +68,7 @@ static struct tok_buffer *tok_text	= NULL;
 
 #if (defined(HAVE_LTEXT_BUFFER) && !defined(BUFFER_DECLARE)) || !defined(BUFFER_DECLARE)
 
-//#warning BUFFER: using ltext (realloc)
+/* #warning BUFFER: using ltext (realloc) */
 #include <ltext.h>
 #define BUFFER_DECLARE(buf)	LText *(buf)	= NULL
 #define BUFFER_READY(buf)	((buf) != NULL)
@@ -95,14 +95,14 @@ static struct tok_buffer *tok_text	= NULL;
 #define LINE_INC()		curr_line++
 
 /*tokenizing*/
-#define TOKEN_BEGIN(con, buf)	BEGIN(con); \
+#define TOKEN_BEGIN(con, buf)	BEGIN((con)); \
 		ERROR_LINE(); \
 		BUFFER_CLEAR((buf))
 #define TOKEN_RETURNS(tok)	BEGIN(INITIAL); \
 		ERROR_LINE_SET(0); \
-		return tok
-#define TOKEN_RETURN(tok)	return tok
-#define TOKEN_ERROR(q)		ERROR_SET(q);return TOK_ERROR
+		return (tok)
+#define TOKEN_RETURN(tok)	return (tok)
+#define TOKEN_ERROR(q)		ERROR_SET((q));return TOK_ERROR
 
 /*flex definitions*/
 #define YY_DECL	static tok_type yylex( void )
@@ -203,7 +203,8 @@ typedef struct Input_Buffer{
 	struct Input_Buffer	*child;
 } Input_Buffer;
 
-tok_bool				tok_ready	= 0;	
+
+tok_bool				tok_ready	= 0;
 #define TOKEN_READY_SET()		tok_ready	= 1
 #define TOKEN_READY_UNSET()		tok_ready	= 0
 #define TOKEN_READY()			(tok_ready == 1)
@@ -272,7 +273,7 @@ tok_id tokenizer_new(FILE *f)
     TOKEN_BUFFER_CREATE(tb->child);		/*create new token buffer*/
     if(tb->child == NULL)
 	return 0;				/*something got wrong*/
-    tb		= tb->child;				/*else setup structure*/
+    tb		= tb->child;			/*else setup structure*/
     tb->id	= f;
     tb->state	= yy_create_buffer(f, YY_BUF_SIZE);
     tokb_curr		= tb;			/*setup current tokb*/
@@ -322,7 +323,6 @@ TOKEN_STRUCT *tokenizer_scan(TOKEN_STRUCT *tok)
     else
     {	tok->error	= NOERR;
   	tok->error_line	= 0;	}
-
     return tok;
 }
 
