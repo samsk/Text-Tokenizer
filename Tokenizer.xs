@@ -1,11 +1,31 @@
+/* Tokenizer.xs
+ *	-- perl module for fast lexical analyzation based on FLEX parser
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the same terms as Perl itself.
+ * 
+ *  Copyright 2003-2004 Sam <sam@frida.fri.utc.sk>
+ *
+*/
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/*perl includes*/
+#define PERL_NO_GET_CONTEXT     /* we want efficiency (powered by perlguts)*/
 #include "EXTERN.h"
 #include "perl.h"
 #include "XSUB.h"
 
-/*code header file*/
-#include <tokenizer.h>
+#ifdef __cplusplus
+}
+#endif
 
-/*enum->constants hack*/
+/*code header file*/
+#include "tokenizer.h"
+
+/*enum->constants hack (for const-c.inc to work)*/
 #define TOK_UNDEF	TOK_UNDEF_v
 #define TOK_TEXT	TOK_TEXT_v
 #define TOK_DQUOTE	TOK_DQUOTE_v
@@ -28,37 +48,42 @@
 #include "const-c.inc"
 
 /*internal functions*/
-tok_buf *_Tokenizer_tokb_new()
+static tok_buf *_Tokenizer_tokb_new(pTHX)
 {
 	return (tok_buf *) newSV(0);
 }
 
-void _Tokenizer_tokb_clear(tok_buf *buf)
+static void _Tokenizer_tokb_clear(pTHX_ tok_buf *buf)
 {
 	sv_setpv((SV *)buf, "");
 	return;
 }
 
-void _Tokenizer_tokb_put(tok_buf *buf, char *str, unsigned int len)
+static void _Tokenizer_tokb_put(pTHX_ tok_buf *buf, char *str, unsigned int len)
 {
 	sv_catpvn((SV *) buf, str, len);
 	return;
 }
 
-void _Tokenizer_tokb_del(tok_buf *buf)
+static void _Tokenizer_tokb_del(pTHX_ tok_buf *buf)
 {
 	sv_2mortal((SV *) buf);
 	return;
 }
 
-void _Tokenizer_tokb_init()
+static void _Tokenizer_tokb_init(pTHX)
 {
 	struct tok_buffer *tb	= (struct tok_buffer *) safemalloc(sizeof(struct tok_buffer));
 
-	tb->ts_new	= _Tokenizer_tokb_new;
-	tb->ts_clear	= _Tokenizer_tokb_clear;
-	tb->ts_put	= _Tokenizer_tokb_put;
-	tb->ts_del	= _Tokenizer_tokb_del;
+	tb->ts_new	= (void *)_Tokenizer_tokb_new;
+	tb->ts_clear	= (void *)_Tokenizer_tokb_clear;
+	tb->ts_put	= (void *)_Tokenizer_tokb_put;
+	tb->ts_del	= (void *)_Tokenizer_tokb_del;
+#ifdef aTHX
+	tb->ts_context	= aTHX;
+#else
+	tb->ts_context	= NULL;
+#endif
 	tokenizer_setcb(tb);
 	return;
 }
@@ -71,7 +96,7 @@ INCLUDE: const-xs.inc
 PROTOTYPES: DISABLE
 
 BOOT:
-	_Tokenizer_tokb_init();
+	_Tokenizer_tokb_init(aTHX);
 
 
 int

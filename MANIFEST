@@ -16,4 +16,4 @@ tokenizer.c.flex			flex modulue source
 tokenizer.h				module header file
 Tokenizer.pm				perl module file
 Tokenizer.xs				xs perl file
-META.yml                                 Module meta-data (added by MakeMaker)
+META.yml                                Module meta-data (added by MakeMaker)

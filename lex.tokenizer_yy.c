@@ -2226,22 +2226,41 @@ static yyconst struct yy_trans_info *yy_start_state_list[9] =
 char *yytext;
 #line 1 "tokenizer.c.flex"
 #define INITIAL 0
-/* Simple tokenizer by Sam <sam@frida.fri.utc.sk> (c) 2001-2003
-   Features:
-   	* parses text to tokens taking mind on quotes & escape characters
-	* specialy developed for config files reading
-	* escaped quotes inside quotes are auto-unescaped (can be disabled)
-	* `' quotation strings optional support (as subtype of `` strings)
-	* DOS/UNIX/MAC end of lines support
-	* enhanced error reporting
-	* very fast ?-)
-	* internal line count (for multiple buffers)
-	* bash style comments (can be disabled)
-	* avaible one generic & one configurable interface for in-memory
-		tokens storage
-	* bad call (segfault) prevention
-*/
-#line 18 "tokenizer.c.flex"
+/***************************************************************************
+ *   Simple text tokenizer (flex based)					   *
+ *   Features:								   *
+ *  	- parses text to tokens taking mind on quotes & escape characters  *
+ *	- specialy developed for config files reading			   *
+ *	- escaped quotes inside quotes are auto-unescaped (can be disabled)*
+ *	- `' quotation strings optional support (as subtype of `` strings) *
+ *	- DOS/UNIX/MAC end of lines support				   *
+ *	- enhanced error reporting					   *
+ *	- very fast ?-)							   *
+ *	- internal line count (for multiple buffers)			   *
+ *	- bash style comments (can be disabled)				   *
+ *	- avaible one generic & one configurable interface for in-memory   *
+ *		tokens storage						   *
+ *	- bad call (segfault) prevention				   *
+ *									   *
+ *   Copyright (C) 2001-2004 by Samuel Behan 				   *
+ *   sam@frida.fri.utc.sk			                           *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
+#line 37 "tokenizer.c.flex"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -2259,21 +2278,24 @@ char *yytext;
 
 /*buffer handlings*/
 #ifdef HAVE_CALLBACK_BUFFER
-#warning BUFFER: using callback
+
+//#warning BUFFER: using callback
 /*buffer*/
 static struct tok_buffer *tok_text	= NULL;
 #define TOKEN_TEXT		tok_text
 #define BUFFER_DECLARE(buf)	struct tok_buffer *(buf)	= NULL
 #define BUFFER_READY(buf)	((buf) != NULL)
-#define BUFFER_NEW(buf)		buf = TOKEN_TEXT->ts_new()
-#define BUFFER_CLEAR(buf)	TOKEN_TEXT->ts_clear((buf))
-#define BUFFER_PUT(buf,str,len) TOKEN_TEXT->ts_put((buf), (str), (len))
+#define BUFFER_NEW(buf)		buf = TOKEN_TEXT->ts_new(TOKEN_TEXT->ts_context)
+#define BUFFER_CLEAR(buf)	TOKEN_TEXT->ts_clear(TOKEN_TEXT->ts_context, (buf))
+#define BUFFER_PUT(buf,str,len) TOKEN_TEXT->ts_put(TOKEN_TEXT->ts_context ,(buf), (str), (len))
 #define BUFFER_GET(buf)		(buf)
-#define BUFFER_DESTROY(buf)	TOKEN_TEXT->ts_del((buf))
+#define BUFFER_DESTROY(buf)	TOKEN_TEXT->ts_del(TOKEN_TEXT->ts_context ,(buf))
+
 #endif
 
 #if (defined(HAVE_LTEXT_BUFFER) && !defined(BUFFER_DECLARE)) || !defined(BUFFER_DECLARE)
-#warning BUFFER: using ltext (realloc)
+
+//#warning BUFFER: using ltext (realloc)
 #include <ltext.h>
 #define BUFFER_DECLARE(buf)	LText *(buf)	= NULL
 #define BUFFER_READY(buf)	((buf) != NULL)
@@ -2282,10 +2304,11 @@ static struct tok_buffer *tok_text	= NULL;
 #define BUFFER_PUT(buf,str,len) ltextput((buf), (str), (len))
 #define BUFFER_GET(buf)		ltextget((buf))
 #define BUFFER_DESTROY(buf)	ltextdestroy((buf))
+
 #endif
 
 #ifndef BUFFER_DECLARE
-#error Missing buffer functions...
+#error Missing buffer handling functions...
 #endif
 
 /*line count & errors*/
@@ -2327,7 +2350,7 @@ static int 	 token_opts	= TOK_OPT_DEFAULT;	/*tokenizer options*/
 
 #define i_quote 3
 
-#line 2331 "lex.tokenizer_yy.c"
+#line 2354 "lex.tokenizer_yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -2465,7 +2488,7 @@ YY_DECL
 	register char *yy_cp = NULL, *yy_bp = NULL;
 	register int yy_act;
 
-#line 114 "tokenizer.c.flex"
+#line 137 "tokenizer.c.flex"
 
 	/*prepare text buffer*/	
 	if(!BUFFER_READY(buffer))
@@ -2473,7 +2496,7 @@ YY_DECL
 	BUFFER_CLEAR(buffer);
 
 	/*double quoted text*/
-#line 2477 "lex.tokenizer_yy.c"
+#line 2500 "lex.tokenizer_yy.c"
 
 	if ( yy_init )
 		{
@@ -2538,102 +2561,102 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 121 "tokenizer.c.flex"
+#line 144 "tokenizer.c.flex"
 TOKEN_BEGIN(d_quote, buffer);
 	YY_BREAK
 
 case 2:
 YY_RULE_SETUP
-#line 123 "tokenizer.c.flex"
+#line 146 "tokenizer.c.flex"
 TOKEN_RETURNS(TOK_DQUOTE);
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 124 "tokenizer.c.flex"
+#line 147 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 125 "tokenizer.c.flex"
+#line 148 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext + (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : 0), (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : yyleng ));
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 126 "tokenizer.c.flex"
+#line 149 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext + ((token_opts & TOK_OPT_UNESCAPE_CHARS) ? 1 : 0), ((token_opts & TOK_OPT_UNESCAPE_CHARS) ? 1 : yyleng ));
 	YY_BREAK
 case YY_STATE_EOF(d_quote):
-#line 127 "tokenizer.c.flex"
+#line 150 "tokenizer.c.flex"
 TOKEN_ERROR(UNCLOSED_DQUOTE);
 	YY_BREAK
 
 /*simple quoted text*/
 case 6:
 YY_RULE_SETUP
-#line 131 "tokenizer.c.flex"
+#line 154 "tokenizer.c.flex"
 TOKEN_BEGIN(s_quote, buffer);
 	YY_BREAK
 
 case 7:
 YY_RULE_SETUP
-#line 133 "tokenizer.c.flex"
+#line 156 "tokenizer.c.flex"
 TOKEN_RETURNS(TOK_SQUOTE);
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 134 "tokenizer.c.flex"
+#line 157 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 135 "tokenizer.c.flex"
+#line 158 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext + (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : 0), (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : yyleng ));
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 136 "tokenizer.c.flex"
+#line 159 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);
 	YY_BREAK
 case YY_STATE_EOF(s_quote):
-#line 137 "tokenizer.c.flex"
+#line 160 "tokenizer.c.flex"
 TOKEN_ERROR(UNCLOSED_SQUOTE);
 	YY_BREAK
 
 /*inverse quoted text*/
 case 11:
 YY_RULE_SETUP
-#line 141 "tokenizer.c.flex"
+#line 164 "tokenizer.c.flex"
 TOKEN_BEGIN(i_quote, buffer);
 	YY_BREAK
 
 case 12:
 YY_RULE_SETUP
-#line 143 "tokenizer.c.flex"
+#line 166 "tokenizer.c.flex"
 TOKEN_RETURNS(TOK_IQUOTE);
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 144 "tokenizer.c.flex"
+#line 167 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 145 "tokenizer.c.flex"
+#line 168 "tokenizer.c.flex"
 {	if(token_opts & TOK_OPT_SIQUOTE)	{	TOKEN_RETURNS(TOK_SIQUOTE); }
 				else  	{ BUFFER_PUT(buffer, yytext, yyleng); } }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 147 "tokenizer.c.flex"
+#line 170 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext + (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : 0), (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : yyleng ));
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 148 "tokenizer.c.flex"
+#line 171 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);
 	YY_BREAK
 case YY_STATE_EOF(i_quote):
-#line 149 "tokenizer.c.flex"
+#line 172 "tokenizer.c.flex"
 TOKEN_ERROR(UNCLOSED_IQUOTE);
 	YY_BREAK
 
@@ -2641,12 +2664,12 @@ TOKEN_ERROR(UNCLOSED_IQUOTE);
 
 case 17:
 YY_RULE_SETUP
-#line 154 "tokenizer.c.flex"
+#line 177 "tokenizer.c.flex"
 LINE_INC();	if(!(token_opts & TOK_OPT_UNESCAPE_LINES))	BUFFER_PUT(buffer, yytext, yyleng);
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 155 "tokenizer.c.flex"
+#line 178 "tokenizer.c.flex"
 LINE_INC();	BUFFER_PUT(buffer, yytext, 1);
 	YY_BREAK
 
@@ -2654,37 +2677,37 @@ LINE_INC();	BUFFER_PUT(buffer, yytext, 1);
 
 case 19:
 YY_RULE_SETUP
-#line 160 "tokenizer.c.flex"
+#line 183 "tokenizer.c.flex"
 { if(token_opts & TOK_OPT_PASSCOMMENT)
 					  {	BUFFER_PUT(buffer, yytext, yyleng);
 										TOKEN_RETURNS(TOK_COMMENT);	} }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 163 "tokenizer.c.flex"
+#line 186 "tokenizer.c.flex"
 LINE_INC();	BUFFER_PUT(buffer, yytext, yyleng);	TOKEN_RETURN(TOK_EOL);
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 164 "tokenizer.c.flex"
+#line 187 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);	TOKEN_RETURN(TOK_TEXT);
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 165 "tokenizer.c.flex"
+#line 188 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);	TOKEN_RETURN(TOK_BLANK);
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 166 "tokenizer.c.flex"
+#line 189 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);	TOKEN_RETURN(TOK_EOF);
 	YY_BREAK
 
 case 23:
 YY_RULE_SETUP
-#line 169 "tokenizer.c.flex"
+#line 192 "tokenizer.c.flex"
 ECHO;
 	YY_BREAK
-#line 2688 "lex.tokenizer_yy.c"
+#line 2711 "lex.tokenizer_yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -3543,7 +3566,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 169 "tokenizer.c.flex"
+#line 192 "tokenizer.c.flex"
 
 
 /* ---------------------------------------

@@ -1,18 +1,37 @@
-/* Simple tokenizer by Sam <sam@frida.fri.utc.sk> (c) 2001-2003
-   Features:
-   	* parses text to tokens taking mind on quotes & escape characters
-	* specialy developed for config files reading
-	* escaped quotes inside quotes are auto-unescaped (can be disabled)
-	* `' quotation strings optional support (as subtype of `` strings)
-	* DOS/UNIX/MAC end of lines support
-	* enhanced error reporting
-	* very fast ?-)
-	* internal line count (for multiple buffers)
-	* bash style comments (can be disabled)
-	* avaible one generic & one configurable interface for in-memory
-		tokens storage
-	* bad call (segfault) prevention
-*/
+/***************************************************************************
+ *   Simple text tokenizer (flex based)					   *
+ *   Features:								   *
+ *  	- parses text to tokens taking mind on quotes & escape characters  *
+ *	- specialy developed for config files reading			   *
+ *	- escaped quotes inside quotes are auto-unescaped (can be disabled)*
+ *	- `' quotation strings optional support (as subtype of `` strings) *
+ *	- DOS/UNIX/MAC end of lines support				   *
+ *	- enhanced error reporting					   *
+ *	- very fast ?-)							   *
+ *	- internal line count (for multiple buffers)			   *
+ *	- bash style comments (can be disabled)				   *
+ *	- avaible one generic & one configurable interface for in-memory   *
+ *		tokens storage						   *
+ *	- bad call (segfault) prevention				   *
+ *									   *
+ *   Copyright (C) 2001-2004 by Samuel Behan 				   *
+ *   sam@frida.fri.utc.sk			                           *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This program is distributed in the hope that it will be useful,       *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU General Public License for more details.                          *
+ *                                                                         *
+ *   You should have received a copy of the GNU General Public License     *
+ *   along with this program; if not, write to the                         *
+ *   Free Software Foundation, Inc.,                                       *
+ *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
+ ***************************************************************************/
 
 %{
 
@@ -32,21 +51,24 @@
 
 /*buffer handlings*/
 #ifdef HAVE_CALLBACK_BUFFER
-#warning BUFFER: using callback
+
+//#warning BUFFER: using callback
 /*buffer*/
 static struct tok_buffer *tok_text	= NULL;
 #define TOKEN_TEXT		tok_text
 #define BUFFER_DECLARE(buf)	struct tok_buffer *(buf)	= NULL
 #define BUFFER_READY(buf)	((buf) != NULL)
-#define BUFFER_NEW(buf)		buf = TOKEN_TEXT->ts_new()
-#define BUFFER_CLEAR(buf)	TOKEN_TEXT->ts_clear((buf))
-#define BUFFER_PUT(buf,str,len) TOKEN_TEXT->ts_put((buf), (str), (len))
+#define BUFFER_NEW(buf)		buf = TOKEN_TEXT->ts_new(TOKEN_TEXT->ts_context)
+#define BUFFER_CLEAR(buf)	TOKEN_TEXT->ts_clear(TOKEN_TEXT->ts_context, (buf))
+#define BUFFER_PUT(buf,str,len) TOKEN_TEXT->ts_put(TOKEN_TEXT->ts_context ,(buf), (str), (len))
 #define BUFFER_GET(buf)		(buf)
-#define BUFFER_DESTROY(buf)	TOKEN_TEXT->ts_del((buf))
+#define BUFFER_DESTROY(buf)	TOKEN_TEXT->ts_del(TOKEN_TEXT->ts_context ,(buf))
+
 #endif
 
 #if (defined(HAVE_LTEXT_BUFFER) && !defined(BUFFER_DECLARE)) || !defined(BUFFER_DECLARE)
-#warning BUFFER: using ltext (realloc)
+
+//#warning BUFFER: using ltext (realloc)
 #include <ltext.h>
 #define BUFFER_DECLARE(buf)	LText *(buf)	= NULL
 #define BUFFER_READY(buf)	((buf) != NULL)
@@ -55,10 +77,11 @@ static struct tok_buffer *tok_text	= NULL;
 #define BUFFER_PUT(buf,str,len) ltextput((buf), (str), (len))
 #define BUFFER_GET(buf)		ltextget((buf))
 #define BUFFER_DESTROY(buf)	ltextdestroy((buf))
+
 #endif
 
 #ifndef BUFFER_DECLARE
-#error Missing buffer functions...
+#error Missing buffer handling functions...
 #endif
 
 /*line count & errors*/

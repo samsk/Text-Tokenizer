@@ -1,5 +1,12 @@
 Revision history for Perl extension Tokenizer.
 
+0.2.2 Fri Mar 26 15:46:00 CET 2004
+	- trying fix compilation problems reported on Sun4 from CPAN
+	   (hopefully they got fixed, i've no Sun to test it :(
+	- now working with PERL_NO_GET_CONTEXT
+        - C module code updated to pass user context parameter
+		for generic callback functions
+
 0.2.1 Wed 24 Mar 2004 02:13:11 PM CET
 	- fixed some compiler portability problematic code
 	- upgraded flex generated code

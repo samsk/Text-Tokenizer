@@ -4,20 +4,22 @@
 #ifndef __TOKENIZER_H
 #define __TOKENIZER_H
 
-__BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*fixups for constants export*/
-#define	TOK_UNDEF_v	0
-#define	TOK_TEXT_v	1
-#define	TOK_DQUOTE_v	2
-#define	TOK_SQUOTE_v	3
-#define	TOK_IQUOTE_v	4
-#define	TOK_SIQUOTE_v	5
-#define	TOK_BLANK_v	6
-#define	TOK_ERROR_v	7
-#define	TOK_EOL_v	8
-#define	TOK_COMMENT_v	9
-#define	TOK_EOF_v	EOF
+#define	TOK_UNDEF_v		0
+#define	TOK_TEXT_v		1
+#define	TOK_DQUOTE_v		2
+#define	TOK_SQUOTE_v		3
+#define	TOK_IQUOTE_v		4
+#define	TOK_SIQUOTE_v		5
+#define	TOK_BLANK_v		6
+#define	TOK_ERROR_v		7
+#define	TOK_EOL_v		8
+#define	TOK_COMMENT_v		9
+#define	TOK_EOF_v		EOF
 
 #define	NOERR_v			0
 #define	UNCLOSED_DQUOTE_v	1
@@ -76,10 +78,11 @@ typedef struct {
 } tok_retval;
 
 struct tok_buffer {
-	tok_buf		*(*ts_new)();		/*create new buffer*/
-	void		(*ts_clear)(tok_buf *);	/*clear buffer*/
-	void		(*ts_put)(tok_buf *, char *, unsigned int);
-	void		(*ts_del)(tok_buf *);
+	tok_buf		*(*ts_new)(void *);		/*create new buffer*/
+	void		(*ts_clear)(void *, tok_buf *);	/*clear buffer*/
+	void		(*ts_put)(void *,   tok_buf *, char *, unsigned int);
+	void		(*ts_del)(void *,   tok_buf *);
+	void		*ts_context;		/*context buffer (if used)*/
 };
 
 /*def*/
@@ -118,6 +121,9 @@ tok_bool tokenizer_flush(tok_id);
 /*destroy whole tokenizer*/
 tok_bool tokenizer_destroy();
 
-__END_DECLS
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
