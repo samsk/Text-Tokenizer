@@ -1,0 +1,9 @@
+Revision history for Perl extension Tokenizer.
+
+0.2   Fri Feb  6 16:35:21 EST 2004
+	- renamed to Text::Tokenizer and published
+
+0.01  Sat Jan  3 00:29:13 2004
+	- original version; created by h2xs 1.22 with options
+		src/tokenizer.h
+
