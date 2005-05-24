@@ -26,8 +26,6 @@
 #define YY_FLEX_MINOR_VERSION 5
 
 #include <stdio.h>
-#include <unistd.h>
-
 
 /* cfront 1.2 defines "c_plusplus" instead of "__cplusplus" */
 #ifdef c_plusplus
@@ -2264,7 +2262,6 @@ char *yytext;
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -2350,7 +2347,7 @@ static int 	 token_opts	= TOK_OPT_DEFAULT;	/*tokenizer options*/
 
 #define i_quote 3
 
-#line 2354 "lex.tokenizer_yy.c"
+#line 2353 "lex.tokenizer_yy.c"
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -2485,10 +2482,10 @@ YY_MALLOC_DECL
 YY_DECL
 	{
 	register yy_state_type yy_current_state;
-	register char *yy_cp, *yy_bp;
+	register char *yy_cp = NULL, *yy_bp = NULL;
 	register int yy_act;
 
-#line 137 "tokenizer.c.flex"
+#line 136 "tokenizer.c.flex"
 
 	/*prepare text buffer*/	
 	if(!BUFFER_READY(buffer))
@@ -2496,7 +2493,7 @@ YY_DECL
 	BUFFER_CLEAR(buffer);
 
 	/*double quoted text*/
-#line 2500 "lex.tokenizer_yy.c"
+#line 2499 "lex.tokenizer_yy.c"
 
 	if ( yy_init )
 		{
@@ -2561,102 +2558,102 @@ do_action:	/* This label is used only to access EOF actions. */
 	{ /* beginning of action switch */
 case 1:
 YY_RULE_SETUP
-#line 144 "tokenizer.c.flex"
+#line 143 "tokenizer.c.flex"
 TOKEN_BEGIN(d_quote, buffer);
 	YY_BREAK
 
 case 2:
 YY_RULE_SETUP
-#line 146 "tokenizer.c.flex"
+#line 145 "tokenizer.c.flex"
 TOKEN_RETURNS(TOK_DQUOTE);
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 147 "tokenizer.c.flex"
+#line 146 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 148 "tokenizer.c.flex"
+#line 147 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext + (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : 0), (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : yyleng ));
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 149 "tokenizer.c.flex"
+#line 148 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext + ((token_opts & TOK_OPT_UNESCAPE_CHARS) ? 1 : 0), ((token_opts & TOK_OPT_UNESCAPE_CHARS) ? 1 : yyleng ));
 	YY_BREAK
 case YY_STATE_EOF(d_quote):
-#line 150 "tokenizer.c.flex"
+#line 149 "tokenizer.c.flex"
 TOKEN_ERROR(UNCLOSED_DQUOTE);
 	YY_BREAK
 
 /*simple quoted text*/
 case 6:
 YY_RULE_SETUP
-#line 154 "tokenizer.c.flex"
+#line 153 "tokenizer.c.flex"
 TOKEN_BEGIN(s_quote, buffer);
 	YY_BREAK
 
 case 7:
 YY_RULE_SETUP
-#line 156 "tokenizer.c.flex"
+#line 155 "tokenizer.c.flex"
 TOKEN_RETURNS(TOK_SQUOTE);
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 157 "tokenizer.c.flex"
+#line 156 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 158 "tokenizer.c.flex"
+#line 157 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext + (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : 0), (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : yyleng ));
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 159 "tokenizer.c.flex"
+#line 158 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);
 	YY_BREAK
 case YY_STATE_EOF(s_quote):
-#line 160 "tokenizer.c.flex"
+#line 159 "tokenizer.c.flex"
 TOKEN_ERROR(UNCLOSED_SQUOTE);
 	YY_BREAK
 
 /*inverse quoted text*/
 case 11:
 YY_RULE_SETUP
-#line 164 "tokenizer.c.flex"
+#line 163 "tokenizer.c.flex"
 TOKEN_BEGIN(i_quote, buffer);
 	YY_BREAK
 
 case 12:
 YY_RULE_SETUP
-#line 166 "tokenizer.c.flex"
+#line 165 "tokenizer.c.flex"
 TOKEN_RETURNS(TOK_IQUOTE);
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 167 "tokenizer.c.flex"
+#line 166 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 168 "tokenizer.c.flex"
+#line 167 "tokenizer.c.flex"
 {	if(token_opts & TOK_OPT_SIQUOTE)	{	TOKEN_RETURNS(TOK_SIQUOTE); }
 				else  	{ BUFFER_PUT(buffer, yytext, yyleng); } }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 170 "tokenizer.c.flex"
+#line 169 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext + (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : 0), (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : yyleng ));
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 171 "tokenizer.c.flex"
+#line 170 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);
 	YY_BREAK
 case YY_STATE_EOF(i_quote):
-#line 172 "tokenizer.c.flex"
+#line 171 "tokenizer.c.flex"
 TOKEN_ERROR(UNCLOSED_IQUOTE);
 	YY_BREAK
 
@@ -2664,12 +2661,12 @@ TOKEN_ERROR(UNCLOSED_IQUOTE);
 
 case 17:
 YY_RULE_SETUP
-#line 177 "tokenizer.c.flex"
+#line 176 "tokenizer.c.flex"
 LINE_INC();	if(!(token_opts & TOK_OPT_UNESCAPE_LINES))	BUFFER_PUT(buffer, yytext, yyleng);
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 178 "tokenizer.c.flex"
+#line 177 "tokenizer.c.flex"
 LINE_INC();	BUFFER_PUT(buffer, yytext, 1);
 	YY_BREAK
 
@@ -2677,37 +2674,37 @@ LINE_INC();	BUFFER_PUT(buffer, yytext, 1);
 
 case 19:
 YY_RULE_SETUP
-#line 183 "tokenizer.c.flex"
+#line 182 "tokenizer.c.flex"
 { if(token_opts & TOK_OPT_PASSCOMMENT)
 					  {	BUFFER_PUT(buffer, yytext, yyleng);
 										TOKEN_RETURNS(TOK_COMMENT);	} }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 186 "tokenizer.c.flex"
+#line 185 "tokenizer.c.flex"
 LINE_INC();	BUFFER_PUT(buffer, yytext, yyleng);	TOKEN_RETURN(TOK_EOL);
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 187 "tokenizer.c.flex"
+#line 186 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);	TOKEN_RETURN(TOK_TEXT);
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 188 "tokenizer.c.flex"
+#line 187 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);	TOKEN_RETURN(TOK_BLANK);
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 189 "tokenizer.c.flex"
+#line 188 "tokenizer.c.flex"
 BUFFER_PUT(buffer, yytext, yyleng);	TOKEN_RETURN(TOK_EOF);
 	YY_BREAK
 
 case 23:
 YY_RULE_SETUP
-#line 192 "tokenizer.c.flex"
+#line 191 "tokenizer.c.flex"
 ECHO;
 	YY_BREAK
-#line 2711 "lex.tokenizer_yy.c"
+#line 2710 "lex.tokenizer_yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -3066,6 +3063,7 @@ register char *yy_bp;
 #endif	/* ifndef YY_NO_UNPUT */
 
 
+#ifndef YY_NO_INPUT
 #ifdef __cplusplus
 static int yyinput()
 #else
@@ -3137,7 +3135,7 @@ static int input()
 
 	return c;
 	}
-
+#endif /* YY_NO_INPUT */
 
 #ifdef YY_USE_PROTOS
 void yyrestart( FILE *input_file )
@@ -3565,7 +3563,7 @@ int main()
 	return 0;
 	}
 #endif
-#line 192 "tokenizer.c.flex"
+#line 191 "tokenizer.c.flex"
 
 
 /* ---------------------------------------

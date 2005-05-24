@@ -1,5 +1,9 @@
 Revision history for Perl extension Tokenizer.
 
+0.2.6 Fri Jan  7 09:54:12 CET 2005
+	- realy removed 'unistd.h' :)
+	- fixes for older perl versions
+
 0.2.5 Fri Jan  7 09:54:12 CET 2005
 	- removed 'unistd.h' because cpan testers reports error when compiling
 		this on win32 platform

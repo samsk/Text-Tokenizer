@@ -1,6 +1,5 @@
 package Text::Tokenizer;
 
-use 5.008001;
 use strict;
 use warnings;
 use Carp;
@@ -57,7 +56,7 @@ our @EXPORT = qw(
 	tokenizer_destroy
 );
 
-our $VERSION = '0.2.5';
+our $VERSION = '0.2.6';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
