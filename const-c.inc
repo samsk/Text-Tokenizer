@@ -185,6 +185,50 @@ constant_15 (pTHX_ const char *name, IV *iv_return) {
 }
 
 static int
+constant_18 (pTHX_ const char *name, IV *iv_return) {
+  /* When generated this function returned values for the list of names given
+     here.  However, subsequent manual editing may have added or removed some.
+     TOK_OPT_CC_COMMENT TOK_OPT_NOUNESCAPE UNCLOSED_C_COMMENT */
+  /* Offset 8 gives the best switch position.  */
+  switch (name[8]) {
+  case 'C':
+    if (memEQ(name, "TOK_OPT_CC_COMMENT", 18)) {
+    /*                       ^                */
+#ifdef TOK_OPT_CC_COMMENT
+      *iv_return = TOK_OPT_CC_COMMENT;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  case 'N':
+    if (memEQ(name, "TOK_OPT_NOUNESCAPE", 18)) {
+    /*                       ^                */
+#ifdef TOK_OPT_NOUNESCAPE
+      *iv_return = TOK_OPT_NOUNESCAPE;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  case '_':
+    if (memEQ(name, "UNCLOSED_C_COMMENT", 18)) {
+    /*                       ^                */
+#ifdef UNCLOSED_C_COMMENT
+      *iv_return = UNCLOSED_C_COMMENT;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  }
+  return PERL_constant_NOTFOUND;
+}
+
+static int
 constant (pTHX_ const char *name, STRLEN len, IV *iv_return) {
   /* Initially switch on the length of the name.  */
   /* When generated this function returned values for the list of names given
@@ -197,15 +241,18 @@ constant (pTHX_ const char *name, STRLEN len, IV *iv_return) {
      Regenerate these constant functions by feeding this entire source file to
      perl -x
 
-#!/usr/bin/perl5.8.6 -w
+#!/usr/bin/perl5.8.7 -w
 use ExtUtils::Constant qw (constant_types C_constant XS_constant);
 
 my $types = {map {($_, 1)} qw(IV)};
-my @names = (qw(NOCONTEXT NOERR TOK_BLANK TOK_COMMENT TOK_DQUOTE TOK_EOF
-	       TOK_EOL TOK_ERROR TOK_IQUOTE TOK_OPT_DEFAULT TOK_OPT_NONE
-	       TOK_OPT_NOUNESCAPE TOK_OPT_PASSCOMMENT TOK_OPT_SIQUOTE
-	       TOK_OPT_UNESCAPE TOK_OPT_UNESCAPE_CHARS TOK_OPT_UNESCAPE_LINES
-	       TOK_SIQUOTE TOK_SQUOTE TOK_TEXT TOK_UNDEF UNCLOSED_DQUOTE
+my @names = (qw(NOCONTEXT NOERR TOK_BASH_COMMENT TOK_BLANK TOK_CC_COMMENT
+	       TOK_COMMENT TOK_C_COMMENT TOK_DQUOTE TOK_EOF TOK_EOL TOK_ERROR
+	       TOK_IQUOTE TOK_OPT_CC_COMMENT TOK_OPT_C_COMMENT TOK_OPT_DEFAULT
+	       TOK_OPT_NONE TOK_OPT_NOUNESCAPE TOK_OPT_NO_BASH_COMMENT
+	       TOK_OPT_NO_IQUOTE TOK_OPT_PASSCOMMENT TOK_OPT_PASS_COMMENT
+	       TOK_OPT_SIQUOTE TOK_OPT_UNESCAPE TOK_OPT_UNESCAPE_CHARS
+	       TOK_OPT_UNESCAPE_LINES TOK_OPT_UNESCAPE_NQ_LINES TOK_SIQUOTE
+	       TOK_SQUOTE TOK_TEXT TOK_UNDEF UNCLOSED_C_COMMENT UNCLOSED_DQUOTE
 	       UNCLOSED_IQUOTE UNCLOSED_SQUOTE));
 
 print constant_types(); # macro defs
@@ -312,33 +359,104 @@ __END__
 #endif
     }
     break;
+  case 13:
+    if (memEQ(name, "TOK_C_COMMENT", 13)) {
+#ifdef TOK_C_COMMENT
+      *iv_return = TOK_C_COMMENT;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  case 14:
+    if (memEQ(name, "TOK_CC_COMMENT", 14)) {
+#ifdef TOK_CC_COMMENT
+      *iv_return = TOK_CC_COMMENT;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
   case 15:
     return constant_15 (aTHX_ name, iv_return);
     break;
   case 16:
-    if (memEQ(name, "TOK_OPT_UNESCAPE", 16)) {
-#ifdef TOK_OPT_UNESCAPE
-      *iv_return = TOK_OPT_UNESCAPE;
-      return PERL_constant_ISIV;
+    /* Names all of length 16.  */
+    /* TOK_BASH_COMMENT TOK_OPT_UNESCAPE */
+    /* Offset 6 gives the best switch position.  */
+    switch (name[6]) {
+    case 'S':
+      if (memEQ(name, "TOK_BASH_COMMENT", 16)) {
+      /*                     ^                */
+#ifdef TOK_BASH_COMMENT
+        *iv_return = TOK_BASH_COMMENT;
+        return PERL_constant_ISIV;
 #else
-      return PERL_constant_NOTDEF;
+        return PERL_constant_NOTDEF;
 #endif
+      }
+      break;
+    case 'T':
+      if (memEQ(name, "TOK_OPT_UNESCAPE", 16)) {
+      /*                     ^                */
+#ifdef TOK_OPT_UNESCAPE
+        *iv_return = TOK_OPT_UNESCAPE;
+        return PERL_constant_ISIV;
+#else
+        return PERL_constant_NOTDEF;
+#endif
+      }
+      break;
+    }
+    break;
+  case 17:
+    /* Names all of length 17.  */
+    /* TOK_OPT_C_COMMENT TOK_OPT_NO_IQUOTE */
+    /* Offset 12 gives the best switch position.  */
+    switch (name[12]) {
+    case 'M':
+      if (memEQ(name, "TOK_OPT_C_COMMENT", 17)) {
+      /*                           ^           */
+#ifdef TOK_OPT_C_COMMENT
+        *iv_return = TOK_OPT_C_COMMENT;
+        return PERL_constant_ISIV;
+#else
+        return PERL_constant_NOTDEF;
+#endif
+      }
+      break;
+    case 'Q':
+      if (memEQ(name, "TOK_OPT_NO_IQUOTE", 17)) {
+      /*                           ^           */
+#ifdef TOK_OPT_NO_IQUOTE
+        *iv_return = TOK_OPT_NO_IQUOTE;
+        return PERL_constant_ISIV;
+#else
+        return PERL_constant_NOTDEF;
+#endif
+      }
+      break;
     }
     break;
   case 18:
-    if (memEQ(name, "TOK_OPT_NOUNESCAPE", 18)) {
-#ifdef TOK_OPT_NOUNESCAPE
-      *iv_return = TOK_OPT_NOUNESCAPE;
-      return PERL_constant_ISIV;
-#else
-      return PERL_constant_NOTDEF;
-#endif
-    }
+    return constant_18 (aTHX_ name, iv_return);
     break;
   case 19:
     if (memEQ(name, "TOK_OPT_PASSCOMMENT", 19)) {
 #ifdef TOK_OPT_PASSCOMMENT
       *iv_return = TOK_OPT_PASSCOMMENT;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  case 20:
+    if (memEQ(name, "TOK_OPT_PASS_COMMENT", 20)) {
+#ifdef TOK_OPT_PASS_COMMENT
+      *iv_return = TOK_OPT_PASS_COMMENT;
       return PERL_constant_ISIV;
 #else
       return PERL_constant_NOTDEF;
@@ -372,6 +490,26 @@ __END__
 #endif
       }
       break;
+    }
+    break;
+  case 23:
+    if (memEQ(name, "TOK_OPT_NO_BASH_COMMENT", 23)) {
+#ifdef TOK_OPT_NO_BASH_COMMENT
+      *iv_return = TOK_OPT_NO_BASH_COMMENT;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
+    }
+    break;
+  case 25:
+    if (memEQ(name, "TOK_OPT_UNESCAPE_NQ_LINES", 25)) {
+#ifdef TOK_OPT_UNESCAPE_NQ_LINES
+      *iv_return = TOK_OPT_UNESCAPE_NQ_LINES;
+      return PERL_constant_ISIV;
+#else
+      return PERL_constant_NOTDEF;
+#endif
     }
     break;
   }

@@ -13,6 +13,7 @@ README
 TODO
 t/1.t					inclusion test
 t/2.t					copy test
+t/3.t					copy test with C/C++ comments
 tokenizer.c.flex			flex modulue source
 tokenizer.h				module header file
 Tokenizer.pm				perl module file

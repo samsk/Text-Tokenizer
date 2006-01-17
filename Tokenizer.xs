@@ -4,7 +4,7 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the same terms as Perl itself.
  * 
- *  Copyright 2003-2004 Sam <sam(at)frida.fri.utc.sk>
+ *  Copyright 2003-2006 Sam <samkob(at)gmail.com>
  *
 */
 
@@ -37,22 +37,26 @@ extern "C" {
 #include "tokenizer.h"
 
 /*enum->constants hack (for const-c.inc to work)*/
-#define TOK_UNDEF	TOK_UNDEF_v
-#define TOK_TEXT	TOK_TEXT_v
-#define TOK_DQUOTE	TOK_DQUOTE_v
-#define TOK_SQUOTE	TOK_SQUOTE_v
-#define TOK_IQUOTE	TOK_IQUOTE_v
-#define TOK_SIQUOTE	TOK_SIQUOTE_v
-#define TOK_BLANK	TOK_BLANK_v
-#define TOK_COMMENT	TOK_COMMENT_v
-#define TOK_ERROR	TOK_ERROR_v
-#define TOK_EOL		TOK_EOL_v
-#define TOK_EOF		TOK_EOF_v
-#define NOERR		NOERR_v
-#define UNCLOSED_DQUOTE	UNCLOSED_DQUOTE_v
-#define UNCLOSED_SQUOTE	UNCLOSED_SQUOTE_v
-#define UNCLOSED_IQUOTE	UNCLOSED_IQUOTE_v
-#define NOCONTEXT	NOCONTEXT_v
+#define TOK_UNDEF		TOK_UNDEF_v
+#define TOK_TEXT		TOK_TEXT_v
+#define TOK_DQUOTE		TOK_DQUOTE_v
+#define TOK_SQUOTE		TOK_SQUOTE_v
+#define TOK_IQUOTE		TOK_IQUOTE_v
+#define TOK_SIQUOTE		TOK_SIQUOTE_v
+#define TOK_BLANK		TOK_BLANK_v
+#define TOK_COMMENT		TOK_BASH_COMMENT_v
+#define TOK_BASH_COMMENT	TOK_BASH_COMMENT_v
+#define TOK_C_COMMENT		TOK_C_COMMENT_v
+#define TOK_CC_COMMENT		TOK_CC_COMMENT_v
+#define TOK_ERROR		TOK_ERROR_v
+#define TOK_EOL			TOK_EOL_v
+#define TOK_EOF			TOK_EOF_v
+#define NOERR			NOERR_v
+#define UNCLOSED_DQUOTE		UNCLOSED_DQUOTE_v
+#define UNCLOSED_SQUOTE		UNCLOSED_SQUOTE_v
+#define UNCLOSED_IQUOTE		UNCLOSED_IQUOTE_v
+#define NOCONTEXT		NOCONTEXT_v
+#define UNCLOSED_C_COMMENT	UNCLOSED_C_COMMENT_v
 
 /*package header files*/
 #include "ppport.h"

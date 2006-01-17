@@ -1,4 +1,4 @@
-#copy-mode test
+#copy-mode test with c/c++ comments
 #
 
 use Test::More tests => 10;
@@ -11,7 +11,7 @@ ok(open(F, $0),	'open() call');
 ok(($tokid = tokenizer_new(F)), 'Tokenizer create');
 ok(tokenizer_exists($tokid), 'Tokenizer exists');
 ok(tokenizer_switch($tokid), 'Tokenizer switch');
-ok(tokenizer_options(TOK_OPT_NOUNESCAPE|TOK_OPT_PASSCOMMENT), 'Tokenizer options');
+ok(tokenizer_options(TOK_OPT_NOUNESCAPE|TOK_OPT_PASS_COMMENT|TOK_OPT_C_COMMENT|TOK_OPT_CC_COMMENT), 'Tokenizer options');
 
 #get size of file via tokenizer
 my ($str, $tok, $lin, $err, $errlin, $file_len);
@@ -31,6 +31,8 @@ while($go == 1)
 	elsif($tok == TOK_IQUOTE)	{ $str	= "\`$str\`";	}
 	elsif($tok == TOK_EOL)		{	}
 	elsif($tok == TOK_COMMENT)	{ $str  = '#'.$str;	}
+	elsif($tok == TOK_C_COMMENT)	{ $str  = "/*$str*/";	}
+	elsif($tok == TOK_CC_COMMENT)	{ $str  = "//$str";	}
 	elsif($tok == TOK_UNDEF)
 		{ last;		}
 	else	{ last;	};

@@ -10,12 +10,13 @@
  *	- very fast ?-)							   *
  *	- internal line count (for multiple buffers)			   *
  *	- bash style comments (can be disabled)				   *
+ *	- optional C/C++ style comments					   *
  *	- avaible one generic & one configurable interface for in-memory   *
  *		tokens storage						   *
  *	- bad call (segfault) prevention				   *
  *									   *
- *   Copyright (C) 2001-2004 by Samuel Behan 				   *
- *   sam<at>frida.fri.utc.sk			                           *
+ *   Copyright (C) 2001-2006 by Samuel Behan 				   *
+ *   samkob<at>gmail<dot>com			                           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -67,7 +68,7 @@ static struct tok_buffer *tok_text	= NULL;
 
 #if (defined(HAVE_LTEXT_BUFFER) && !defined(BUFFER_DECLARE)) || !defined(BUFFER_DECLARE)
 
-/* #warning BUFFER: using ltext (realloc) */
+/* #warning BUFFER: using ltext (dynamicaly realloced text buffer) */
 #include <ltext.h>
 #define BUFFER_DECLARE(buf)	LText *(buf)	= NULL
 #define BUFFER_READY(buf)	((buf) != NULL)
@@ -94,14 +95,23 @@ static struct tok_buffer *tok_text	= NULL;
 #define LINE_INC()		curr_line++
 
 /*tokenizing*/
-#define TOKEN_BEGIN(con, buf)	BEGIN((con)); \
-		ERROR_LINE(); \
-		BUFFER_CLEAR((buf))
-#define TOKEN_RETURNS(tok)	BEGIN(INITIAL); \
-		ERROR_LINE_SET(0); \
-		return (tok)
-#define TOKEN_RETURN(tok)	return (tok)
-#define TOKEN_ERROR(q)		ERROR_SET((q));return TOK_ERROR
+#define TOKEN_BEGIN(con, buf)	{	\
+			BEGIN((con));	\
+			ERROR_LINE();	\
+			BUFFER_CLEAR((buf));	}
+#define TOKEN_RETURNS(tok)	{	\
+			BEGIN(INITIAL); \
+			ERROR_LINE_SET(0);	\
+			return (tok);		}
+#define TOKEN_RETURN(tok)	\
+			return (tok);
+#define	TOKEN_LOOSE(buf)	{	\
+			BUFFER_CLEAR((buf));	\
+			BEGIN(INITIAL);		\
+			ERROR_LINE_SET(0);	}
+#define TOKEN_ERROR(q)		{	\
+			ERROR_SET((q));	\
+			return TOK_ERROR;	}
 
 /*flex definitions*/
 #define YY_DECL	static tok_type yylex( void )
@@ -117,29 +127,31 @@ static int 	 token_opts	= TOK_OPT_DEFAULT;	/*tokenizer options*/
 
 /*identificators (flex always matches biggest chunk it can)*/
 BLANK		[[:blank:]]
-TEXT		([^\t\n\"\'\`[:blank:]]|\\(\"|\'|\`)|\0)
+TEXT		([^\t\n\r\"\'\`[:blank:]#\/]|\\(\"|\'|\`)|\/)
 EOL		([\r\n]|\r\n)
-COMMENT		(#[^\n]*)
 
 /*options*/
 %option prefix="tokenizer_yy"
 %option noyywrap
 %option 8bit
-%option fast
+%option full
 %option align
 
 /*conditions (exclusive)*/
 %x d_quote
 %x s_quote
 %x i_quote
+%x bash_comment
+%x c_comment
+%x cc_comment
 
 %%
-	/*prepare text buffer*/	
+	/* -- prepare text buffer -- */
 	if(!BUFFER_READY(buffer))
 		BUFFER_NEW(buffer);
 	BUFFER_CLEAR(buffer);
 
-	/*double quoted text*/
+	/* -- double quoted text -- */
 \"	TOKEN_BEGIN(d_quote, buffer);
 <d_quote>{
 	\"									TOKEN_RETURNS(TOK_DQUOTE);
@@ -149,7 +161,7 @@ COMMENT		(#[^\n]*)
 	<<EOF>>									TOKEN_ERROR(UNCLOSED_DQUOTE);
 }
 
-	/*simple quoted text*/
+	/* -- simple quoted text -- */
 \'	TOKEN_BEGIN(s_quote, buffer);
 <s_quote>{
 	\'									TOKEN_RETURNS(TOK_SQUOTE);
@@ -159,29 +171,74 @@ COMMENT		(#[^\n]*)
 	<<EOF>>									TOKEN_ERROR(UNCLOSED_SQUOTE);
 }
 
-	/*inverse quoted text*/
-\`	TOKEN_BEGIN(i_quote, buffer);
+	/* -- inverse quoted text -- */
+\`	{  if(!(token_opts & TOK_OPT_NO_IQUOTE))
+	   {	TOKEN_BEGIN(i_quote, buffer);		}
+	   else
+	   {	BUFFER_PUT(buffer, yytext, yyleng);	}	}
 <i_quote>{
 	\`									TOKEN_RETURNS(TOK_IQUOTE);
 	[^\\\n\`\']+			BUFFER_PUT(buffer, yytext, yyleng);
-	\'		{	if(token_opts & TOK_OPT_SIQUOTE)	{	TOKEN_RETURNS(TOK_SIQUOTE); }
-				else  	{ BUFFER_PUT(buffer, yytext, yyleng); } }
+	\'		{	if(token_opts & TOK_OPT_SIQUOTE)
+				{						TOKEN_RETURNS(TOK_SIQUOTE);	}
+				else
+				{	BUFFER_PUT(buffer, yytext, yyleng);					}	}
 	\\\`				BUFFER_PUT(buffer, yytext + (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : 0), (!(token_opts & TOK_OPT_NOUNESCAPE) ? 1 : yyleng ));
 	\\.				BUFFER_PUT(buffer, yytext, yyleng);
 	<<EOF>>									TOKEN_ERROR(UNCLOSED_IQUOTE);
 }
 
-	/*shared rules*/			
+	/* -- shared rules -- */
 <d_quote,s_quote,i_quote>{
 	\\{EOL}		LINE_INC();	if(!(token_opts & TOK_OPT_UNESCAPE_LINES))	BUFFER_PUT(buffer, yytext, yyleng);
 	{EOL}		LINE_INC();	BUFFER_PUT(buffer, yytext, 1);
 }
 
-		/*standalone text*/
+	/* -- BASH comment -- */
+#	{  if(!(token_opts & TOK_OPT_NO_BASH_COMMENT))
+	   {	TOKEN_BEGIN(bash_comment, buffer);	}
+	   else
+	   {	BUFFER_PUT(buffer, yytext, yyleng);	}	}
+<bash_comment>{
+	[^\r\n]+			BUFFER_PUT(buffer, yytext, yyleng);
+	{EOL}		{ LINE_INC();	BUFFER_PUT(buffer, yytext, yyleng);
+					if(token_opts & TOK_OPT_PASS_COMMENT)
+					{					TOKEN_RETURNS(TOK_BASH_COMMENT);	}
+					else
+					{					TOKEN_LOOSE(buffer);		}	}
+}
+
+	/* -- C comment -- */
+\/\*	{  if(token_opts & TOK_OPT_CC_COMMENT)
+	   {	TOKEN_BEGIN(c_comment, buffer);		}
+	   else
+	   {	BUFFER_PUT(buffer, yytext, yyleng);	}	}
+<c_comment>{
+	{EOL}		LINE_INC();	BUFFER_PUT(buffer, yytext, yyleng);
+	\*\/				{  if(token_opts & TOK_OPT_PASS_COMMENT)
+					   {					TOKEN_RETURNS(TOK_C_COMMENT);	}
+					   else
+					   {					TOKEN_LOOSE(buffer);	}	}
+	[^\r\n\*]+			BUFFER_PUT(buffer, yytext, yyleng);
+	<<EOF>>									TOKEN_ERROR(UNCLOSED_C_COMMENT);
+}
+
+	/* -- C++ comment -- */
+\/\/	{  if(token_opts & TOK_OPT_C_COMMENT)
+	   {	TOKEN_BEGIN(cc_comment, buffer);	}
+	   else
+	   {	BUFFER_PUT(buffer, yytext, yyleng);	}	}
+<cc_comment>{
+	[^\r\n]+			BUFFER_PUT(buffer, yytext, yyleng);
+	{EOL}		{ LINE_INC();	BUFFER_PUT(buffer, yytext, yyleng);
+					if(token_opts & TOK_OPT_PASS_COMMENT)
+					{					TOKEN_RETURNS(TOK_CC_COMMENT);	}
+					else
+					{					TOKEN_LOOSE(buffer);	}	}
+}
+
+	/* -- standalone text -- */
 <INITIAL>{
-	{COMMENT}			{ if(token_opts & TOK_OPT_PASSCOMMENT)
-					  {	BUFFER_PUT(buffer, yytext, yyleng);
-										TOKEN_RETURNS(TOK_COMMENT);	} }
 	{EOL}		LINE_INC();	BUFFER_PUT(buffer, yytext, yyleng);	TOKEN_RETURN(TOK_EOL);
 	{TEXT}+				BUFFER_PUT(buffer, yytext, yyleng);	TOKEN_RETURN(TOK_TEXT);
 	{BLANK}+			BUFFER_PUT(buffer, yytext, yyleng);	TOKEN_RETURN(TOK_BLANK);
@@ -195,7 +252,7 @@ COMMENT		(#[^\n]*)
    --------------------------------------- */ 
 
 #define TOKEN_BUFFER Input_Buffer
-typedef struct Input_Buffer{
+typedef struct Input_Buffer {
 	tok_id			id;	/*might be replaced by yy_buffer_state->yy_input_buffer*/
 	tok_line		line;
 	YY_BUFFER_STATE 	state;
@@ -273,7 +330,7 @@ tok_id tokenizer_new(FILE *f)
     if(tb->child == NULL)
 	return 0;				/*something got wrong*/
     tb		= tb->child;			/*else setup structure*/
-    tb->id	= f;
+    tb->id	= TOKEN_ID(f);
     tb->state	= yy_create_buffer(f, YY_BUF_SIZE);
     tokb_curr		= tb;			/*setup current tokb*/
     return TOKEN_ID(tb->id);
@@ -282,7 +339,7 @@ tok_id tokenizer_new(FILE *f)
 /*
  *	creates new tokenizer context pointing to buffer
  */
-tok_id tokenizer_new_strbuf(char *buf, unsigned int len)
+tok_id tokenizer_new_strbuf(const char *buf, unsigned int len)
 {
     TOKEN_BUFFER *tb	= tokb;
 
@@ -295,7 +352,7 @@ tok_id tokenizer_new_strbuf(char *buf, unsigned int len)
     if(tb->child == NULL)
    	return 0;				/*something got wrong*/
     tb	= tb->child;
-    tb->id	= buf;
+    tb->id	= TOKEN_ID(buf);
     tb->state	= yy_scan_bytes(buf, len);	/*YY_END_OF_BUFFER_CHAR*/
     tokb_curr		= tb;			/*setup current tokb*/
     return TOKEN_ID(tb->id);

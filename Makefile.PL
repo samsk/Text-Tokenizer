@@ -5,7 +5,7 @@ WriteMakefile(
     VERSION_FROM      => 'Tokenizer.pm', # finds $VERSION
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'Tokenizer.pm', # retrieve abstract from module
-       AUTHOR         => 'Sam <sam(at)frida.fri.utc.sk>') : ()),
+       AUTHOR         => 'Sam <samkob(at)gmail.com>') : ()),
     LIBS              => [''], # e.g., '-lm'
     DEFINE            => '-DHAVE_CONFIG_H -DHAVE_CALLBACK_BUFFER', 
     INC               => '-I.', 
@@ -20,11 +20,15 @@ if  (eval {require ExtUtils::Constant; 1}) {
   # files to replace their "fallback" counterparts before distributing your
   # changes.
   my @names = (qw(TOK_UNDEF TOK_TEXT TOK_DQUOTE TOK_SQUOTE TOK_IQUOTE
-		TOK_SIQUOTE TOK_BLANK TOK_ERROR TOK_EOL TOK_COMMENT TOK_EOF
+		TOK_SIQUOTE TOK_BLANK TOK_ERROR TOK_EOL TOK_COMMENT TOK_BASH_COMMENT
+		TOK_EOF TOK_C_COMMENT TOK_CC_COMMENT
 		NOERR UNCLOSED_DQUOTE UNCLOSED_SQUOTE UNCLOSED_IQUOTE NOCONTEXT
+		UNCLOSED_C_COMMENT
 		TOK_OPT_DEFAULT TOK_OPT_NONE TOK_OPT_NOUNESCAPE
 	        TOK_OPT_SIQUOTE TOK_OPT_UNESCAPE TOK_OPT_UNESCAPE_CHARS
-		TOK_OPT_UNESCAPE_LINES TOK_OPT_PASSCOMMENT));
+		TOK_OPT_UNESCAPE_LINES TOK_OPT_PASSCOMMENT TOK_OPT_PASS_COMMENT
+		TOK_OPT_UNESCAPE_NQ_LINES TOK_OPT_C_COMMENT TOK_OPT_CC_COMMENT
+		TOK_OPT_NO_BASH_COMMENT TOK_OPT_NO_IQUOTE));
   ExtUtils::Constant::WriteConstants(
                                      NAME         => 'Tokenizer',
                                      NAMES        => \@names,

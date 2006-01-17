@@ -1,5 +1,31 @@
 Revision history for Perl extension Tokenizer.
 
+0.4.0-rc1 Mon Jan 16 01:12:00 CET 2006
+	- AS OF HERE, I PROMISE NOT TO ADD ANY OTHER ADDITIONAL FUNCTIONALITY,
+		AND WILL DO ONLY PERFORMANCE IMPROVEMENTS & BUG FIXES ;)
+	- v0.3.6 releasing as version 0.4.0 release candidate 1
+
+0.3.6 Mon Jan 16 00:07:34 CET 2006
+	- some optimalisations
+	- improve performance by using flex full scanner table
+	- continue testing for 0.4.0
+
+0.3.5 Sun Jan 15 23:54:04 CET 2006
+	- added unclosed C comment handling
+
+0.3.4 Sun Jan 15 23:31:44 CET 2006
+	- reworked comments handling regexp
+	- fully optional C/C++ style comments
+	- BASH style comments can be disabled
+	- comments are from now passed without identificator 
+		=> little backward incompatibility (bash comments is passed without starting '#')
+
+0.3.1 Sun Jan 15 20:15:23 CET 2006 (DEVEL BRANCH)
+	- added C/C++ style comments (changes needed for my new project codetracer)
+
+0.2.7 Sun Sep 11 21:24:49 CEST 2005
+	- updated flex makefile, to automaticaly remove unistd.h
+	
 0.2.6 Fri Jan  7 09:54:12 CET 2005
 	- realy removed 'unistd.h' :)
 	- fixes for older perl versions

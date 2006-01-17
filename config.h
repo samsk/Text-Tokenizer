@@ -4,10 +4,6 @@
 #define __CONFIG_H
 
 
-/*ltext size*/
-#define LText_Size 512
-
-
 #endif
 
 

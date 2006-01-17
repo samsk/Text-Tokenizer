@@ -1,18 +1,23 @@
 ####
-# Makefile by Sam <sam(at)frida.fri.utc.sk>
+# Makefile by Sam <samkob<at>gmail.com>
 #	for generation of flex based tokenizer
 #
 EXT	= c
-FFLAGS	= -F -CFar
+FFLAGS	= -Cfar 
+#FFLAGS	+= -p -p
 FLEX	= flex $(FFLAGS)
 FLEX_EXT= $(EXT).flex
+O_FILE	= lex.tokenizer_yy.$(EXT)
 
-all: lex.tokenizer_yy.$(EXT)
+all: $(O_FILE)
 
-lex.tokenizer_yy.$(EXT): clean tokenizer.$(FLEX_EXT)
+$(O_FILE): clean tokenizer.$(FLEX_EXT)
 	$(FLEX) tokenizer.$(FLEX_EXT)
+	mv $(O_FILE) $(O_FILE).orig
+	grep -v "unistd\\.h" $(O_FILE).orig > $(O_FILE)
+	rm -f $(O_FILE).orig
 
-.PHONY: all clean lex.tokenizer_yy.$(EXT)
+.PHONY: all clean $(O_FILE)
 
 clean:
 	rm -f lex.tokenizer_yy.o

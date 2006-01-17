@@ -18,7 +18,9 @@ extern "C" {
 #define	TOK_BLANK_v		6
 #define	TOK_ERROR_v		7
 #define	TOK_EOL_v		8
-#define	TOK_COMMENT_v		9
+#define	TOK_BASH_COMMENT_v	9
+#define TOK_C_COMMENT_v		10
+#define TOK_CC_COMMENT_v	11
 #define	TOK_EOF_v		EOF
 
 #define	NOERR_v			0
@@ -26,20 +28,24 @@ extern "C" {
 #define	UNCLOSED_SQUOTE_v	2
 #define	UNCLOSED_IQUOTE_v	3
 #define	NOCONTEXT_v		4
+#define UNCLOSED_C_COMMENT_v	5
 
 /*token types*/
 typedef enum {
-   TOK_UNDEF	= TOK_UNDEF_v,
-   TOK_TEXT	= TOK_TEXT_v,
-   TOK_DQUOTE	= TOK_DQUOTE_v,
-   TOK_SQUOTE	= TOK_SQUOTE_v,
-   TOK_IQUOTE	= TOK_IQUOTE_v,
-   TOK_SIQUOTE	= TOK_SIQUOTE_v,
-   TOK_BLANK	= TOK_BLANK_v,
-   TOK_COMMENT	= TOK_COMMENT_v,
-   TOK_ERROR	= TOK_ERROR_v,
-   TOK_EOL	= TOK_EOL_v,
-   TOK_EOF	= TOK_EOF_v
+   TOK_UNDEF		= TOK_UNDEF_v,
+   TOK_TEXT		= TOK_TEXT_v,
+   TOK_DQUOTE		= TOK_DQUOTE_v,
+   TOK_SQUOTE		= TOK_SQUOTE_v,
+   TOK_IQUOTE		= TOK_IQUOTE_v,
+   TOK_SIQUOTE		= TOK_SIQUOTE_v,
+   TOK_BLANK		= TOK_BLANK_v,
+   TOK_ERROR		= TOK_ERROR_v,
+   TOK_EOL		= TOK_EOL_v,
+   TOK_COMMENT		= TOK_BASH_COMMENT_v,
+   TOK_BASH_COMMENT	= TOK_BASH_COMMENT_v,
+   TOK_C_COMMENT	= TOK_C_COMMENT_v,
+   TOK_CC_COMMENT	= TOK_CC_COMMENT_v,
+   TOK_EOF		= TOK_EOF_v
 } tok_type;
 
 /*error types*/
@@ -48,20 +54,27 @@ typedef enum {
   UNCLOSED_DQUOTE	= UNCLOSED_DQUOTE_v,
   UNCLOSED_SQUOTE	= UNCLOSED_SQUOTE_v,
   UNCLOSED_IQUOTE	= UNCLOSED_IQUOTE_v,
-  NOCONTEXT		= NOCONTEXT_v
+  NOCONTEXT		= NOCONTEXT_v,
+  UNCLOSED_C_COMMENT	= UNCLOSED_C_COMMENT_v
 } tok_error;
 
 /*tokenizer options*/
-#define TOK_OPT_NONE		0
-#define TOK_OPT_UNESCAPE_CHARS	(1UL<<1)
-#define TOK_OPT_UNESCAPE_LINES	(1UL<<2)
-#define TOK_OPT_UNESCAPE	(TOK_OPT_UNESCAPE_CHARS | TOK_OPT_UNESCAPE_LINES)
-#define TOK_OPT_NOUNESCAPE	(1UL<<3)
-#define TOK_OPT_SIQUOTE		(1UL<<4)
-#define TOK_OPT_PASSCOMMENT	(1UL<<5)
+#define TOK_OPT_NONE			0UL
+#define TOK_OPT_UNESCAPE_CHARS		(1UL<<1)
+#define TOK_OPT_UNESCAPE_LINES		(1UL<<2)
+#define TOK_OPT_UNESCAPE		(TOK_OPT_UNESCAPE_CHARS | TOK_OPT_UNESCAPE_LINES)
+#define TOK_OPT_NOUNESCAPE		(1UL<<3)
+#define TOK_OPT_SIQUOTE			(1UL<<4)
+#define TOK_OPT_UNESCAPE_NQ_LINES	(1UL<<5)
+#define TOK_OPT_PASSCOMMENT		(1UL<<6)
+#define TOK_OPT_PASS_COMMENT		TOK_OPT_PASSCOMMENT
+#define TOK_OPT_NO_BASH_COMMENT		(1UL<<7)
+#define TOK_OPT_C_COMMENT		(1UL<<8)
+#define TOK_OPT_CC_COMMENT		(1UL<<9)
+#define TOK_OPT_NO_IQUOTE		(1UL<<10)
 
 /*default options*/
-#define TOK_OPT_DEFAULT		(TOK_OPT_NOUNESCAPE)
+#define TOK_OPT_DEFAULT			(TOK_OPT_NOUNESCAPE)
 
 /*typedefs*/
 typedef void*		tok_id;
@@ -106,7 +119,7 @@ static tok_id	tokenizer_init(FILE *);
 /* create new scan buffer from passed file*/
 tok_id	tokenizer_new(FILE *);
 /* crate new scan buffer from passed array of bytes*/
-tok_id	tokenzier_new_strbuf(char *, unsigned int);
+tok_id	tokenzier_new_strbuf(const char *, unsigned int);
 /* perform scan and return values*/
 TOKEN_STRUCT *tokenizer_scan(TOKEN_STRUCT *);
 /* perform scan and return values with buffer auto switch*/
