@@ -1,5 +1,9 @@
 Revision history for Perl extension Tokenizer.
 
+0.4.0 Tue Mar 28 13:54:45 CEST 2006
+	- update to flex version 2.5.33 (fixing some input bugs in scanner)
+	- v0.4.0 rc1 releasing as stable (after long testing period)
+
 0.4.0-rc1 Mon Jan 16 01:12:00 CET 2006
 	- AS OF HERE, I PROMISE NOT TO ADD ANY OTHER ADDITIONAL FUNCTIONALITY,
 		AND WILL DO ONLY PERFORMANCE IMPROVEMENTS & BUG FIXES ;)
