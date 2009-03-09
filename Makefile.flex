@@ -1,5 +1,5 @@
 ####
-# Makefile by Sam <samkob<at>gmail.com>
+# Makefile by Sam <_samkob_(a)_gmail_._com_>
 #	for generation of flex based tokenizer
 #
 EXT	= c
@@ -12,9 +12,7 @@ O_FILE	= lex.tokenizer_yy.$(EXT)
 all: $(O_FILE)
 
 $(O_FILE): clean tokenizer.$(FLEX_EXT)
-	$(FLEX) tokenizer.$(FLEX_EXT)
-	mv $(O_FILE) $(O_FILE).orig
-	grep -v "unistd\\.h" $(O_FILE).orig > $(O_FILE)
+	$(FLEX) --nounistd tokenizer.$(FLEX_EXT)
 	rm -f $(O_FILE).orig
 
 .PHONY: all clean $(O_FILE)

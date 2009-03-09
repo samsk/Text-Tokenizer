@@ -241,7 +241,7 @@ constant (pTHX_ const char *name, STRLEN len, IV *iv_return) {
      Regenerate these constant functions by feeding this entire source file to
      perl -x
 
-#!/usr/bin/perl -w
+#!/usr/bin/perl5.10.0 -w
 use ExtUtils::Constant qw (constant_types C_constant XS_constant);
 
 my $types = {map {($_, 1)} qw(IV)};
@@ -255,11 +255,11 @@ my @names = (qw(NOCONTEXT NOERR TOK_BASH_COMMENT TOK_BLANK TOK_CC_COMMENT
 	       TOK_SQUOTE TOK_TEXT TOK_UNDEF UNCLOSED_C_COMMENT UNCLOSED_DQUOTE
 	       UNCLOSED_IQUOTE UNCLOSED_SQUOTE));
 
-print constant_types(); # macro defs
+print constant_types(), "\n"; # macro defs
 foreach (C_constant ("Tokenizer", 'constant', 'IV', $types, undef, 3, @names) ) {
     print $_, "\n"; # C constant subs
 }
-print "#### XS Section:\n";
+print "\n#### XS Section:\n";
 print XS_constant ("Tokenizer", $types);
 __END__
    */

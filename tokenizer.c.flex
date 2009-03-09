@@ -15,8 +15,8 @@
  *		tokens storage						   *
  *	- bad call (segfault) prevention				   *
  *									   *
- *   Copyright (C) 2001-2006 by Samuel Behan 				   *
- *   samkob<at>gmail<dot>com			                           *
+ *   Copyright (C) 2001-2009 by Samuel Behan 				   *
+ *   samkob_(a)_gmail_._com			                           *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
