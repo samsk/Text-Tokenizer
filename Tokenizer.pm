@@ -64,7 +64,7 @@ our @EXPORT = qw(
 	tokenizer_destroy	
 );
 
-our $VERSION = '0.4.1';
+our $VERSION = '0.4.2';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -133,6 +133,9 @@ Text::Tokenizer - Perl extension for tokenizing text(config) files
   }
   tokenizer_delete($tok_id);
 
+
+  Very complex example of using Text::Tokenizer can be found in passwd_exp - tool for password
+  expiration notification (http://freshmeat.net/projects/passwd_exp)
 
 =head1 DESCRIPTION
 

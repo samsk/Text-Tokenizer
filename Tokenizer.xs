@@ -127,35 +127,35 @@ BOOT:
 	S_Tokenizer_tokb_init(my_aTHX);
 
 
-int
+void *
 tokenizer_options(opts)
 	int	opts
 	CODE:
 		{
-			RETVAL	= (int) tokenizer_options(opts);
+			RETVAL	= (void *) tokenizer_options(opts);
 		}
 	OUTPUT:
 		RETVAL
 
 
-int
+void *
 tokenizer_new(input)
 	FILE *	input
 	CODE:
 		{
-			RETVAL	= (int) tokenizer_new(input);
+			RETVAL	= (void *) tokenizer_new(input);
 		}
 	OUTPUT:
 		RETVAL
 
 
-int
+void *
 tokenizer_new_strbuf(str, len)
 	char *		str
 	unsigned int	len
 	CODE:
 		{
-			RETVAL	= (int) tokenizer_new_strbuf(str, len);
+			RETVAL	= (void *) tokenizer_new_strbuf(str, len);
 		}
 	OUTPUT:
 		RETVAL

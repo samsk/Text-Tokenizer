@@ -1,6 +1,9 @@
 Revision history for Perl extension Tokenizer.
 
-0.4.1 Tue Mar 28 13:54:45 CEST 2006
+0.4.2 Wed Mar 11 11:17:38 CET 2009
+	- 64bit arch compilation fix
+
+0.4.1 Mon Mar  9 22:14:44 CET 2009
 	- update to flex version 2.5.35
 	- fixed example in man page
 
