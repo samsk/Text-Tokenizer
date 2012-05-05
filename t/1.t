@@ -5,6 +5,7 @@
 
 # change 'tests => 2' to 'tests => last_test_to_print';
 
+use strict;
 use Test::More tests => 2;
 BEGIN { use_ok('Text::Tokenizer') };
 

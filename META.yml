@@ -1,13 +1,21 @@
 --- #YAML:1.0
-name:                Text-Tokenizer
-version:             0.4.2
-abstract:            Perl extension for tokenizing text(config) files
-license:             ~
-author:              
-    - Sam <_samkob_(a)_gmail_._com_>
-generated_by:        ExtUtils::MakeMaker version 6.42
-distribution_type:   module
-requires:     
+name:               Text-Tokenizer
+version:            0.4.7
+abstract:           Perl extension for tokenizing text(config) files
+author:
+    - Samuel Behan (http://devel.dob.sk/Text-Tokenizer)
+license:            unknown
+distribution_type:  module
+configure_requires:
+    ExtUtils::MakeMaker:  0
+build_requires:
+    ExtUtils::MakeMaker:  0
+requires:  {}
+no_index:
+    directory:
+        - t
+        - inc
+generated_by:       ExtUtils::MakeMaker version 6.56
 meta-spec:
-    url:     http://module-build.sourceforge.net/META-spec-v1.3.html
-    version: 1.3
+    url:      http://module-build.sourceforge.net/META-spec-v1.4.html
+    version:  1.4

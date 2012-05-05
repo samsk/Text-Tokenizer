@@ -1,5 +1,27 @@
 Revision history for Perl extension Tokenizer.
 
+0.4.7 Wed Jan 25 18:47:35 CET 2012
+	- tokenizer_new_strbuf() didn't worked if no other file based
+		context existed - I've no presumed such a usage ;)
+		Fixed. (report by Andy Colson)
+
+0.4.6 Wed Jan 25 18:47:35 CET 2012
+	- compile on windows again (use stdint.h instead of inttypes.h)
+
+0.4.5 Thu Nov 10 22:50:13 CET 2011
+	- Make test work in strict mode
+	- Various cleanups
+	- License goes to GPLv3
+
+0.4.4 Thu Nov 10 22:50:13 CET 2011
+	- Fix CPAN #72326 bug, changed unique tokenizer identification,
+		to fix compilation warnings in XS module.
+		This seems to happen only on for some version of Perl
+		on some versions of BSD-like OSes - no idea why.
+
+0.4.3 Sun Nov  6 22:56:46 CET 2011
+	- POD docu fix (thanks to Alex Mestiashvili)
+
 0.4.2 Wed Mar 11 11:17:38 CET 2009
 	- 64bit arch compilation fix
 

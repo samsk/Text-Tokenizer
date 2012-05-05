@@ -4,6 +4,8 @@
 #ifndef __TOKENIZER_H
 #define __TOKENIZER_H
 
+#include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -77,7 +79,7 @@ typedef enum {
 #define TOK_OPT_DEFAULT			(TOK_OPT_NOUNESCAPE)
 
 /*typedefs*/
-typedef void*		tok_id;
+typedef unsigned int	tok_id;
 typedef unsigned int	tok_line;
 typedef short int	tok_bool;
 typedef void		tok_buf;

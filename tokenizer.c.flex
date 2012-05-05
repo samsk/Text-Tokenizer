@@ -15,12 +15,11 @@
  *		tokens storage						   *
  *	- bad call (segfault) prevention				   *
  *									   *
- *   Copyright (C) 2001-2009 by Samuel Behan 				   *
- *   samkob_(a)_gmail_._com			                           *
+ *   Copyright (C) 2001-2011 by Samuel Behan (http://devel.dob.sk)         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
+ *   the Free Software Foundation; either version 3 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
  *   This program is distributed in the hope that it will be useful,       *
@@ -122,6 +121,7 @@ static tok_line  curr_line	= 1;			/*line position*/
 static tok_line  error_line	= 0;			/*error line number*/
 static tok_error error_type	= NOERR;		/*only used on TOK_ERROR*/
 static int 	 token_opts	= TOK_OPT_DEFAULT;	/*tokenizer options*/
+static tok_id	 tokid_counter	= 1;			/*tokenizer counter*/
 
 %}
 
@@ -267,8 +267,9 @@ tok_bool				tok_ready	= 0;
 #define TOKEN_SAFE()			if(!TOKEN_READY())	return 0;
 #define TOKEN_IS_SAFE()			(tok_ready)
 #define TOKEN_BUFFER_CREATE(buf)	buf = (TOKEN_BUFFER *) malloc(sizeof(TOKEN_BUFFER)); \
-		if(buf != NULL) {	buf->line = 1; \
-					buf->id =  buf->state = NULL; \
+		if(buf != NULL) {	buf->line = 1; 	\
+					buf->id = 0;	\
+					buf->state = NULL; \
 					buf->child = NULL;	}
 
 
@@ -300,16 +301,33 @@ void tokenizer_setcb(struct tok_buffer *tbuf)
  */
 static tok_id tokenizer_init(FILE *f)
 {
-    if(f != NULL)
+    if(f != NULL && tokb == NULL)
 	yyin	= f;				/*init from file*/
     else
-	return NULL;				/*bad input*/
+	return 0;				/*bad input*/
 
     /*create initial token buffer (needs to be always presented)*/
     TOKEN_BUFFER_CREATE(tokb);
     tokb_curr	= tokb;
-    tokb->id	= f;
+    tokb->id	= tokid_counter++;
     tokb->state	= YY_CURRENT_BUFFER;		/*set state from current*/
+    TOKEN_READY_SET();				/*go be ready*/
+    return TOKEN_ID(tokb->id);
+}
+
+/*
+ *	setup default tokenizer (from strbuf)
+ */
+static tok_id tokenizer_init_strbuf(const char *buf, unsigned int len)
+{
+    if(buf == NULL || tokb != NULL)
+	return 0;				/*bad input*/
+
+    /*create initial token buffer (needs to be always presented)*/
+    TOKEN_BUFFER_CREATE(tokb);
+    tokb_curr	= tokb;
+    tokb->id	= tokid_counter++;
+    tokb->state	= yy_scan_bytes(buf, len);	/*set state from current*/
     TOKEN_READY_SET();				/*go be ready*/
     return TOKEN_ID(tokb->id);
 }
@@ -323,16 +341,16 @@ tok_id tokenizer_new(FILE *f)
 
     if(tb == NULL)				/*not initialized*/
 	return tokenizer_init(f);
-    				
+
     while(tb != NULL && tb->child != NULL)	/*else we will look for end of tokenizers list*/
 	tb	= tb->child;
     TOKEN_BUFFER_CREATE(tb->child);		/*create new token buffer*/
-    if(tb->child == NULL)
+    if(tb->child == 0)
 	return 0;				/*something got wrong*/
     tb		= tb->child;			/*else setup structure*/
-    tb->id	= TOKEN_ID(f);
+    tb->id	= tokid_counter++;
     tb->state	= yy_create_buffer(f, YY_BUF_SIZE);
-    tokb_curr		= tb;			/*setup current tokb*/
+    tokb_curr	= tb;				/*setup current tokb*/
     return TOKEN_ID(tb->id);
 }
 
@@ -343,18 +361,18 @@ tok_id tokenizer_new_strbuf(const char *buf, unsigned int len)
 {
     TOKEN_BUFFER *tb	= tokb;
 
-    if(tb == NULL)				/*(mad hacker) again auto-init*/
-	return NULL;
-    
+    if(tb == NULL)				/*not initialized*/
+	return tokenizer_init_strbuf(buf, len);
+
     while(tb != NULL && tb->child != NULL)
 	tb	= tb->child;
     TOKEN_BUFFER_CREATE(tb->child);
     if(tb->child == NULL)
    	return 0;				/*something got wrong*/
-    tb	= tb->child;
-    tb->id	= TOKEN_ID(buf);
+    tb		= tb->child;
+    tb->id	= tokid_counter++;
     tb->state	= yy_scan_bytes(buf, len);	/*YY_END_OF_BUFFER_CHAR*/
-    tokb_curr		= tb;			/*setup current tokb*/
+    tokb_curr	= tb;				/*setup current tokb*/
     return TOKEN_ID(tb->id);
 }
 
@@ -369,7 +387,7 @@ TOKEN_STRUCT *tokenizer_scan(TOKEN_STRUCT *tok)
 	tok->error	= NOCONTEXT;
 	tok->line	= tok->error_line	= 0;
   	return NULL; }
-	
+
     tok->token	= yylex();
     tok->buffer	= BUFFER_GET(buffer);
     tok->line	= LINE_GET();
@@ -495,13 +513,13 @@ int main()
 {
 	FILE	*f,*ff;
 	TOKEN_STRUCT	ts;
-	
+
 	f	= fopen("input.txt", "r");
-//	ff	= fopen("input2.txt", "r");
+/*	ff	= fopen("input2.txt", "r");	*/
 	tokenizer_opts(TOK_OPT_NOUNESCAPE|TOK_OPT_SIQUOTE);
 	tokenizer_new(f);
-//	tokenizer_new(ff);
-//	tokenizer_switch(TOKEN_ID(ff));
+/*	tokenizer_new(ff);			*/
+/*	tokenizer_switch(TOKEN_ID(ff));		*/
 	do {
 		tokenizer_scan(&ts);
 		if(ts.token == TOK_DQUOTE)
@@ -522,5 +540,4 @@ int main()
 }
 
 #endif
-
 

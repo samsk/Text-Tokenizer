@@ -4,7 +4,7 @@
  * This library is free software; you can redistribute it and/or
  * modify it under the same terms as Perl itself.
  * 
- *  Copyright 2003-2006 Sam <samkob(at)gmail.com>
+ *  Copyright 2003-2011 Samuel Behan (http://devel.dob.sk)
  *
 */
 
@@ -127,35 +127,35 @@ BOOT:
 	S_Tokenizer_tokb_init(my_aTHX);
 
 
-void *
+unsigned int
 tokenizer_options(opts)
 	int	opts
 	CODE:
 		{
-			RETVAL	= (void *) tokenizer_options(opts);
+			RETVAL	= tokenizer_options(opts);
 		}
 	OUTPUT:
 		RETVAL
 
 
-void *
+unsigned int
 tokenizer_new(input)
 	FILE *	input
 	CODE:
 		{
-			RETVAL	= (void *) tokenizer_new(input);
+			RETVAL	= tokenizer_new(input);
 		}
 	OUTPUT:
 		RETVAL
 
 
-void *
+unsigned int
 tokenizer_new_strbuf(str, len)
 	char *		str
 	unsigned int	len
 	CODE:
 		{
-			RETVAL	= (void *) tokenizer_new_strbuf(str, len);
+			RETVAL	= tokenizer_new_strbuf(str, len);
 		}
 	OUTPUT:
 		RETVAL
